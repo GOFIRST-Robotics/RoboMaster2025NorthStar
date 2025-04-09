@@ -54,8 +54,7 @@ RevMotor::RevMotor(
       motorIdentifier(desMotorIdentifier),
       motorCanBus(motorCanBus),
       desiredOutput(0),
-      motorInverted(isInverted),
-      targetVoltage(0)
+      motorInverted(isInverted)
 {
     // motorDisconnectTimeout.stop();
 }
@@ -80,11 +79,7 @@ RevMotor::ControlMode RevMotor::getControlMode() const
 void RevMotor::setControlValue(float value)
 {
     controlValue = value;
-    
-    // If you want backward compatibility with existing voltage control:
-    if (currentControlMode == ControlMode::VOLTAGE) {
-        setTargetVoltage(value);
-    }
+
 }
 
 float RevMotor::getControlValue() const

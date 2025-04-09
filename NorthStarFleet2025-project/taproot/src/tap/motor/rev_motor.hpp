@@ -137,8 +137,6 @@ public:
     mockable const char* getName() const;
 
 
-    void setTargetVoltage(float targetVoltage);
-
 
 
 
@@ -199,8 +197,6 @@ private:
     tap::can::CanBus motorCanBus;
 
     int16_t desiredOutput;
-
-    float targetVoltage;
 
     bool motorInverted;
 

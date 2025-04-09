@@ -50,7 +50,7 @@
 
 /* define timers here -------------------------------------------------------*/
 tap::arch::PeriodicMilliTimer sendMotorTimeout(2);
-// tap::arch::PeriodicMilliTimer sendMotorTimeoutREV(20);
+tap::arch::PeriodicMilliTimer sendMotorTimeoutREV(20);
 
 
 control::Robot robot(*src::DoNotUse_getDrivers());
@@ -80,13 +80,7 @@ int main()
     Board::initialize();
     initializeIo(drivers);
 
-    tap::motor::RevMotor m_rev_motor(
-        drivers, 
-        tap::motor::REVMotorId::REV_MOTOR1, 
-        tap::can::CanBus::CAN_BUS1, 
-        false, 
-        "REV Motor 1"
-    );
+    
 
 
     // tap::motor::DjiMotor m_DjiMotor(
@@ -121,14 +115,14 @@ int main()
             PROFILE(drivers->profiler, drivers->bmi088.periodicIMUUpdate, ());
             PROFILE(drivers->profiler, drivers->commandScheduler.run, ());
             PROFILE(drivers->profiler, drivers->djiMotorTxHandler.encodeAndSendCanData, ());
-            PROFILE(drivers->profiler, drivers->revMotorTxHandler.encodeAndSendCanData, ()); //todo figuer out if this causes issues
+            // PROFILE(drivers->profiler, drivers->revMotorTxHandler.encodeAndSendCanData, ()); //todo figuer out if this causes issues
             PROFILE(drivers->profiler, drivers->terminalSerial.update, ());
         }
-        // if(sendMotorTimeoutREV.execute())
-        // {
+        if(sendMotorTimeoutREV.execute())
+        {
             
-        //     PROFILE(drivers->profiler, drivers->revMotorTxHandler.encodeAndSendCanData, ()); //todo figuer out if this causes issues
-        // }
+            PROFILE(drivers->profiler, drivers->revMotorTxHandler.encodeAndSendCanData, ()); //todo figuer out if this causes issues
+        }
 
         modm::delay_us(10);
     }

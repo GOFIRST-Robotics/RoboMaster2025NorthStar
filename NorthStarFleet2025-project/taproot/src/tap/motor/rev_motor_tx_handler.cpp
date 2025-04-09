@@ -93,6 +93,7 @@ void RevMotorTxHandler::encodeAndSendCanData()
                 messageSuccess &= drivers->can.sendMessage(can::CanBus::CAN_BUS1, heartbeatMsg);
                 
                 // Create and send control message for this motor
+                // if(is intended value paramter or control)
                 modm::can::Message controlMsg = createRevCanMessage(APICommand::DutyCycle, motor);
                 motor->serializeCanSendData(&controlMsg);
                 messageSuccess &= drivers->can.sendMessage(can::CanBus::CAN_BUS1, controlMsg);
