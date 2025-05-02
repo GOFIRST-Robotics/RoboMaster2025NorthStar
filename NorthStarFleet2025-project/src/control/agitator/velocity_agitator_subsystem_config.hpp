@@ -4,7 +4,7 @@
 #include "tap/communication/can/can_bus.hpp"
 #include "tap/motor/dji_motor.hpp"
 
-namespace control::agitator
+namespace src::agitator
 {
 /**
  * @param[in] jammingDistance jamming timer counts down when distance between
@@ -41,6 +41,6 @@ struct VelocityAgitatorSubsystemConfig
     /// controlled by sending voltage commands, this term should be 0.
     float velocityPIDFeedForwardGain;
 };
-}  // namespace aruwsrc::agitator
+}  // namespace src::agitator
 
 #endif  // VELOCITY_AGITATOR_SUBSYSTEM_CONFIG_HPP_

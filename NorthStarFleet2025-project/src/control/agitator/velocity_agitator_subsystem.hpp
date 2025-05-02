@@ -17,12 +17,12 @@
 
 #include "velocity_agitator_subsystem_config.hpp"
 
-namespace control
+namespace src
 {
 class Drivers;
 }
 
-namespace control::agitator
+namespace src::agitator
 {
 /**
  * Subsystem whose primary purpose is to encapsulate an agitator motor that operates using a
@@ -56,17 +56,13 @@ public:
 
     void refresh() override;
 
-    // void refreshSafeDisconnect() override // TODO
-    // {
-    //     subsystemJamStatus = false;
-    //     agitatorMotor.setDesiredOutput(0);
-    // }
+    void refreshSafeDisconnect() override // TODO
+    {
+        subsystemJamStatus = false;
+        agitatorMotor.setDesiredOutput(0);
+    }
 
-    void runHardwareTests() override;
-
-    void onHardwareTestStart() override;
-
-    const char* getName() override { return "velocity agitator"; } // TODO
+    const char* getName() const override { return "velocity agitator"; } // TODO
 
     /// @return The velocity setpoint that some command has requested, in radians / second
     inline float getSetpoint() const override { return velocitySetpoint; }

@@ -69,7 +69,14 @@
         "valarray": "cpp",
         "variant": "cpp",
         "SConstruct": "python",
-        "SConscript": "python"
+        "SConscript": "python",
+        "bit": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "numbers": "cpp",
+        "ranges": "cpp",
+        "span": "cpp",
+        "stop_token": "cpp"
     },
     "C_Cpp.errorSquiggles": "Enabled",
     "C_Cpp.default.includePath": [
@@ -91,5 +98,9 @@
         "editor.rulers": [
             100
         ]
+    },
+    "[cpp]": {
+    "editor.defaultFormatter": "xaver.clang-format",
+    "editor.formatOnSave": true
     },
 }

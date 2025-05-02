@@ -31,6 +31,7 @@
 #include "tap/mock/can_mock.hpp"
 #include "tap/mock/can_rx_handler_mock.hpp"
 #include "tap/mock/command_mapper_mock.hpp"
+#include "tap/mock/command_scheduler_mock.hpp"
 #include "tap/mock/digital_mock.hpp"
 #include "tap/mock/dji_motor_terminal_serial_handler_mock.hpp"
 #include "tap/mock/dji_motor_tx_handler_mock.hpp"
@@ -42,7 +43,7 @@
 #include "tap/mock/scheduler_terminal_handler_mock.hpp"
 #include "tap/mock/terminal_serial_mock.hpp"
 #include "tap/mock/uart_mock.hpp"
-#include "tap/mock/command_scheduler_mock.hpp"
+
 #else
 #include "tap/architecture/profiler.hpp"
 #include "tap/communication/can/can.hpp"
@@ -57,11 +58,14 @@
 #include "tap/communication/serial/terminal_serial.hpp"
 #include "tap/communication/serial/uart.hpp"
 #include "tap/control/command_mapper.hpp"
+#include "tap/control/command_scheduler.hpp"
 #include "tap/control/scheduler_terminal_handler.hpp"
 #include "tap/errors/error_controller.hpp"
 #include "tap/motor/dji_motor_terminal_serial_handler.hpp"
 #include "tap/motor/dji_motor_tx_handler.hpp"
-#include "tap/control/command_scheduler.hpp"
+#include "tap/motor/rev_motor_tx_handler.hpp"
+
+// #include "../../src/communication/can/turret/turret_mcb_can_comm.hpp"
 #endif
 
 namespace tap
@@ -92,13 +96,15 @@ protected:
           errorController(this),
           djiMotorTerminalSerialHandler(this),
           djiMotorTxHandler(this),
+          revMotorTxHandler(this),
           bmi088(this),
 #ifdef ENV_UNIT_TESTS
           commandScheduler(this)
 #else
           commandScheduler(this, true)
 #endif
-          {}
+    {
+    }
 
 #if defined(PLATFORM_HOSTED) && defined(ENV_UNIT_TESTS)
     arch::Profiler profiler;
@@ -137,6 +143,7 @@ public:
     errors::ErrorController errorController;
     motor::DjiMotorTerminalSerialHandler djiMotorTerminalSerialHandler;
     motor::DjiMotorTxHandler djiMotorTxHandler;
+    motor::RevMotorTxHandler revMotorTxHandler;
     communication::sensors::imu::bmi088::Bmi088 bmi088;
     control::CommandScheduler commandScheduler;
 #endif

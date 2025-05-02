@@ -86,7 +86,7 @@ public:
     /**
      * The number of samples we take in order to determine the mpu offsets.
      */
-    static constexpr float BMI088_OFFSET_SAMPLES = 1000;
+    float BMI088_OFFSET_SAMPLES = 1000;
 
     Bmi088(tap::Drivers *drivers);
 
@@ -96,12 +96,17 @@ public:
     mockable void initialize(float sampleFrequency, float mahonyKp, float mahonyKi);
 
     /**
-     * Call this function at 500 Hz. Reads IMU data and performs the mahony AHRS algorithm to
-     * compute pitch/roll/yaw.
+     * Call this function at same rate as intialized sample frequency.
+     * Performs the mahony AHRS algorithm to compute pitch/roll/yaw.
+     */
+    mockable void periodicIMUUpdate();
+
+    /**
+     * This function reads the IMU data from SPI
      *
      * @note This function blocks for 129 microseconds to read registers from the BMI088.
      */
-    mockable void periodicIMUUpdate();
+    mockable void read();
 
     /**
      * Returns the state of the IMU. Can be not connected, connected but not calibrated, or
@@ -141,6 +146,21 @@ public:
 
     mockable inline uint32_t getPrevIMUDataReceivedTime() const { return prevIMUDataReceivedTime; }
 
+    inline void setOffsetSamples(float samples) { BMI088_OFFSET_SAMPLES = samples; }
+
+    inline void setAccOversampling(Acc::AccBandwidth oversampling)
+    {
+        accOversampling = oversampling;
+    }
+    inline void setAccOutputRate(Acc::AccOutputRate outputRate) { accOutputRate = outputRate; }
+
+    inline void setGyroOutputRate(Gyro::GyroBandwidth outputRate) { gyroOutputRate = outputRate; }
+
+    inline void setTargetTemperature(float temperatureC)
+    {
+        imuHeater.setDesiredTemperature(temperatureC);
+    }
+
 private:
     static constexpr uint16_t RAW_TEMPERATURE_TO_APPLY_OFFSET = 1023;
     /// Offset parsed temperature reading by this amount if > RAW_TEMPERATURE_TO_APPLY_OFFSET.
@@ -177,7 +197,12 @@ private:
 
     uint32_t prevIMUDataReceivedTime = 0;
 
+    Acc::AccBandwidth accOversampling = Acc::AccBandwidth::NORMAL;
+    Acc::AccOutputRate accOutputRate = Acc::AccOutputRate::Hz800;
+
     void initializeAcc();
+
+    Gyro::GyroBandwidth gyroOutputRate = Gyro::GyroBandwidth::ODR1000_BANDWIDTH116;
     void initializeGyro();
 
     void computeOffsets();

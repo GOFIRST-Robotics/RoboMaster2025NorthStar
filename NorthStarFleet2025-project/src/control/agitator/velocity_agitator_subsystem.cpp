@@ -17,7 +17,7 @@
 
 using namespace tap::motor;
 
-namespace control::agitator
+namespace src::agitator
 {
 VelocityAgitatorSubsystem::VelocityAgitatorSubsystem(
     tap::Drivers* drivers,
@@ -75,10 +75,6 @@ bool VelocityAgitatorSubsystem::calibrateHere()
     return true;
 }
 
-void VelocityAgitatorSubsystem::runHardwareTests() {}
-
-void VelocityAgitatorSubsystem::onHardwareTestStart() {}
-
 float VelocityAgitatorSubsystem::getCurrentValueIntegral() const
 {
     if (!agitatorIsCalibrated)
@@ -115,4 +111,4 @@ void VelocityAgitatorSubsystem::setSetpoint(float velocity)
         velocitySetpoint = velocity;
     }
 }
-}  // namespace control::agitator
+}  // namespace src::agitator
