@@ -1,3 +1,5 @@
+#ifndef TARGET_HERO
+
 #ifndef FLYWHEEL_RUN_COMMAND
 #define FLYWHEEL_RUN_COMMAND
 
@@ -36,4 +38,6 @@ private:
     FlywheelSubsystem *flywheel;
 };
 }  // namespace src::control::flywheel
-#endif
+#endif  // FLYWHEEL_RUN_COMMAND
+
+#endif  // TARGET_HERO

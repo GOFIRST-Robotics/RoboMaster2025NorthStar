@@ -11,17 +11,11 @@ HeroFlywheelRunCommand::HeroFlywheelRunCommand(HeroFlywheelSubsystem *flywheel) 
 
 void HeroFlywheelRunCommand::initialize()
 {
-    flywheel->setDesiredLaunchSpeedLeft(6000.0f);
-    flywheel->setDesiredLaunchSpeedRight(6000.0f);
-    flywheel->setDesiredLaunchSpeedDown(6000.0f);
+    flywheel->setDesiredSpin(110);
+    flywheel->setDesiredLaunchSpeed(15.0f);
 }
 
-void HeroFlywheelRunCommand::end(bool interrupted)
-{
-    flywheel->setDesiredLaunchSpeedLeft(0);
-    flywheel->setDesiredLaunchSpeedRight(0);
-    flywheel->setDesiredLaunchSpeedDown(0);
-}
+void HeroFlywheelRunCommand::end(bool interrupted) { flywheel->setDesiredLaunchSpeed(0.0f); }
 
 }  // namespace src::control::flywheel
 

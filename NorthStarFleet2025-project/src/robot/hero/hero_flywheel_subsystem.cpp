@@ -7,6 +7,7 @@
 
 using namespace tap::motor;
 using namespace tap::algorithms;
+using namespace src::flywheel;
 
 namespace src::control::flywheel
 {
@@ -17,6 +18,7 @@ HeroFlywheelSubsystem::HeroFlywheelSubsystem(
     tap::motor::MotorId downMotorId,
     tap::can::CanBus canBus)
     : tap::control::Subsystem(drivers),
+      spinToRPMMap(SPIN_TO_INTERPOLATABLE_MPS_TO_RPM),
       velocityPidLeftWheel(
           FLYWHEEL_PID_KP,
           FLYWHEEL_PID_KI,
@@ -53,31 +55,40 @@ void HeroFlywheelSubsystem::initialize()
     prevTime = tap::arch::clock::getTimeMilliseconds();
 }
 
-void HeroFlywheelSubsystem::setDesiredLaunchSpeedLeft(float speed)
+void HeroFlywheelSubsystem::setDesiredSpin(u_int16_t spin)
+{
+    if (auto spinSet = toSpinPreset(spin))
+    {
+        desiredSpin = spinSet.value();
+        desiredSpinValue = spin;
+    }
+}
+
+void HeroFlywheelSubsystem::setDesiredLaunchSpeed(float speed)
 {
     desiredLaunchSpeedLeft = limitVal(speed, 0.0f, MAX_DESIRED_LAUNCH_SPEED);
-    desiredRpmRampLeft.setTarget(desiredLaunchSpeedLeft);
-}
-
-void HeroFlywheelSubsystem::setDesiredLaunchSpeedRight(float speed)
-{
     desiredLaunchSpeedRight = limitVal(speed, 0.0f, MAX_DESIRED_LAUNCH_SPEED);
-    desiredRpmRampRight.setTarget(desiredLaunchSpeedRight);
+    desiredLaunchSpeedDown =
+        limitVal(speed * (desiredSpinValue / 100.0f), 0.0f, MAX_DESIRED_LAUNCH_SPEED);  // uses spin
+
+    desiredRpmRampLeft.setTarget(launchSpeedToFlywheelRpm(desiredLaunchSpeedLeft));
+    desiredRpmRampRight.setTarget(launchSpeedToFlywheelRpm(desiredLaunchSpeedRight));
+    desiredRpmRampDown.setTarget(launchSpeedToFlywheelRpm(desiredLaunchSpeedDown));
 }
 
-void HeroFlywheelSubsystem::setDesiredLaunchSpeedDown(float speed)
+float HeroFlywheelSubsystem::launchSpeedToFlywheelRpm(float launchSpeed) const
 {
-    desiredLaunchSpeedDown = limitVal(speed, 0.0f, MAX_DESIRED_LAUNCH_SPEED);
-    desiredRpmRampDown.setTarget(desiredLaunchSpeedDown);
+    modm::interpolation::Linear<modm::Pair<float, float>> MPSToRPMInterpolator = {
+        spinToRPMMap.at(desiredSpin).data(),
+        spinToRPMMap.at(desiredSpin).size()};
+    return MPSToRPMInterpolator.interpolate(launchSpeed);
 }
-
-float HeroFlywheelSubsystem::getCurrentFlyWheelMotorRPM(tap::motor::DjiMotor motor) const
-{
-    return motor.getShaftRPM();
-}
-float speedglgtoop;
-float outputppp;
-float ugegsbkjdfk;
+float debugWheelLeft = 0;
+float debugWheelRight = 0;
+float debugWheelDown = 0;
+float debugDesiredLeft = 0;
+float debugDesiredRight = 0;
+float debugDesiredDown = 0;
 void HeroFlywheelSubsystem::refresh()
 {
     uint32_t currTime = tap::arch::clock::getTimeMilliseconds();
@@ -89,15 +100,18 @@ void HeroFlywheelSubsystem::refresh()
     desiredRpmRampRight.update(FRICTION_WHEEL_RAMP_SPEED * (currTime - prevTime));
     desiredRpmRampDown.update(FRICTION_WHEEL_RAMP_SPEED * (currTime - prevTime));
     prevTime = currTime;
-    speedglgtoop = downWheel.getShaftRPM();
-    outputppp = velocityPidDownWheel.getValue();
-    ugegsbkjdfk = desiredRpmRampRight.getValue();
     velocityPidLeftWheel.update(desiredRpmRampLeft.getValue() - leftWheel.getShaftRPM());
     leftWheel.setDesiredOutput(static_cast<int32_t>(velocityPidLeftWheel.getValue()));
     velocityPidRightWheel.update(desiredRpmRampRight.getValue() - rightWheel.getShaftRPM());
     rightWheel.setDesiredOutput(static_cast<int32_t>(velocityPidRightWheel.getValue()));
     velocityPidDownWheel.update(desiredRpmRampDown.getValue() - downWheel.getShaftRPM());
     downWheel.setDesiredOutput(static_cast<int32_t>(velocityPidDownWheel.getValue()));
+    debugDesiredLeft = desiredRpmRampLeft.getValue();
+    debugDesiredRight = desiredRpmRampRight.getValue();
+    debugDesiredDown = desiredRpmRampDown.getValue();
+    debugWheelLeft = leftWheel.getShaftRPM();
+    debugWheelRight = rightWheel.getShaftRPM();
+    debugWheelDown = downWheel.getShaftRPM();
 }
 }  // namespace src::control::flywheel
 

@@ -17,8 +17,8 @@
  * along with aruw-mcb.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef FLYwheel_ON_GOVERNOR_HPP_
-#define FLYwheel_ON_GOVERNOR_HPP_
+#ifndef FLYWHEEL_ON_GOVERNOR_HPP_
+#define FLYWHEEL_ON_GOVERNOR_HPP_
 
 #include "tap/algorithms/math_user_utils.hpp"
 #include "tap/control/governor/command_governor_interface.hpp"
@@ -47,22 +47,19 @@ public:
     {
         return
             // left
-            (!tap::algorithms::compareFloatClose(flywheel.getDesiredFlywheelSpeedLeft(), 0.0f, 1) &&
+            (!tap::algorithms::compareFloatClose(flywheel.getDesiredFlywheelSpeedLeft(), .0f, 1) &&
              flywheel.getCurrentLeftFlywheelMotorRPM() >=
                  flywheel.getDesiredFlywheelSpeedLeft() * MINIMUM_SPEED_THRESHOLD_FRACTION &&
              flywheel.getCurrentLeftFlywheelMotorRPM() <=
                  flywheel.getDesiredFlywheelSpeedLeft() * MAXIMUM_SPEED_THRESHOLD_FRACTION) &&
             // right
-            (!tap::algorithms::compareFloatClose(
-                 flywheel.getDesiredFlywheelSpeedRight(),
-                 0.0f,
-                 1) &&
+            (!tap::algorithms::compareFloatClose(flywheel.getDesiredFlywheelSpeedRight(), .0f, 1) &&
              flywheel.getCurrentRightFlywheelMotorRPM() >=
                  flywheel.getDesiredFlywheelSpeedRight() * MINIMUM_SPEED_THRESHOLD_FRACTION &&
              flywheel.getCurrentRightFlywheelMotorRPM() <=
                  flywheel.getDesiredFlywheelSpeedRight() * MAXIMUM_SPEED_THRESHOLD_FRACTION) &&
             // up
-            (!tap::algorithms::compareFloatClose(flywheel.getDesiredFlywheelSpeedUp(), 0.0f, 1) &&
+            (!tap::algorithms::compareFloatClose(flywheel.getDesiredFlywheelSpeedUp(), .0f, 1) &&
              flywheel.getCurrentUpFlywheelMotorRPM() >=
                  flywheel.getDesiredFlywheelSpeedUp() * MINIMUM_SPEED_THRESHOLD_FRACTION &&
              flywheel.getCurrentUpFlywheelMotorRPM() <=
@@ -79,4 +76,4 @@ private:
 };
 }  // namespace src::control::governor
 
-#endif  // FRICTION_wheelS_ON_GOVERNOR_HPP_
+#endif  // FLYWHEEL_ON_GOVERNOR_HPP_

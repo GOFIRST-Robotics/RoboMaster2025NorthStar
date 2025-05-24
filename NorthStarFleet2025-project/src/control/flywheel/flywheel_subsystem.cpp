@@ -1,3 +1,5 @@
+#ifndef TARGET_HERO
+
 #include "flywheel_subsystem.hpp"
 
 #include "tap/algorithms/math_user_utils.hpp"
@@ -37,11 +39,13 @@ void FlywheelSubsystem::initialize()
 
 void FlywheelSubsystem::setDesiredSpin(u_int16_t spin)
 {
-    if (spinToRPMMap.contains(spin))
+    if (auto spinSet = toSpinPreset(spin))
     {
-        desiredSpin = spin;
+        desiredSpin = spinSet.value();
+        desiredSpinValue = spin;
     }
 }
+
 /**
  * using the set spin sets a desired rpm for the flywheels with the up wheel scaled by the spin
  * @param[in] speed in meters per second
@@ -51,7 +55,7 @@ void FlywheelSubsystem::setDesiredLaunchSpeed(float speed)
     desiredLaunchSpeedLeft = limitVal(speed, 0.0f, MAX_DESIRED_LAUNCH_SPEED);
     desiredLaunchSpeedRight = limitVal(speed, 0.0f, MAX_DESIRED_LAUNCH_SPEED);
     desiredLaunchSpeedUp =
-        limitVal(speed * (desiredSpin / 100.0f), 0.0f, MAX_DESIRED_LAUNCH_SPEED);  // uses spin
+        limitVal(speed * (desiredSpinValue / 100.0f), 0.0f, MAX_DESIRED_LAUNCH_SPEED);  // uses spin
 
     desiredRpmRampLeft.setTarget(launchSpeedToFlywheelRpm(desiredLaunchSpeedLeft));
     desiredRpmRampRight.setTarget(launchSpeedToFlywheelRpm(desiredLaunchSpeedRight));
@@ -92,3 +96,5 @@ void FlywheelSubsystem::refresh()
     upWheel.setControlValue(desiredRpmRampUp.getValue());
 }
 }  // namespace src::control::flywheel
+
+#endif  // TARGET_HERO

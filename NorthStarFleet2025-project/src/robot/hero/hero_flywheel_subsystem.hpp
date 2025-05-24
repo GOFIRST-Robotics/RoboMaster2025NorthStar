@@ -3,10 +3,13 @@
 #ifndef HERO_FLYWHEEL_SUBSYSTEM
 #define HERO_FLYWHEEL_SUBSYSTEM
 
+#include <modm/container/pair.hpp>
+
 #include "tap/algorithms/ramp.hpp"
 #include "tap/control/subsystem.hpp"
 #include "tap/motor/dji_motor.hpp"
 
+#include "control/flywheel/flywheel_constants.hpp"
 #include "modm/math/filter/pid.hpp"
 
 namespace src::control::flywheel
@@ -23,15 +26,34 @@ public:
 
     void initialize() override;
 
-    mockable void setDesiredLaunchSpeedLeft(float speed);
-    mockable void setDesiredLaunchSpeedRight(float speed);
-    mockable void setDesiredLaunchSpeedDown(float speed);
+    mockable void setDesiredSpin(u_int16_t spin);
+
+    mockable float getDesiredSpin() const { return desiredSpin; }
+
+    mockable void setDesiredLaunchSpeed(float speed);
 
     mockable float getDesiredLaunchSpeedLeft() const { return desiredLaunchSpeedLeft; }
     mockable float getDesiredLaunchSpeedRight() const { return desiredLaunchSpeedRight; }
     mockable float getDesiredLaunchSpeedDown() const { return desiredLaunchSpeedDown; }
 
-    float getCurrentFlyWheelMotorRPM(tap::motor::DjiMotor motor) const;
+    mockable float getDesiredFlywheelSpeedLeft() const
+    {
+        return launchSpeedToFlywheelRpm(desiredLaunchSpeedLeft);
+    }
+    mockable float getDesiredFlywheelSpeedRight() const
+    {
+        return launchSpeedToFlywheelRpm(desiredLaunchSpeedRight);
+    }
+    mockable float getDesiredFlywheelSpeedDown() const
+    {
+        return launchSpeedToFlywheelRpm(desiredLaunchSpeedDown);
+    }
+
+    float getCurrentLeftFlywheelMotorRPM() const { return leftWheel.getShaftRPM(); }
+
+    float getCurrentRightFlywheelMotorRPM() const { return rightWheel.getShaftRPM(); }
+
+    float getCurrentDownFlywheelMotorRPM() const { return downWheel.getShaftRPM(); }
 
     void refresh() override;
 
@@ -58,6 +80,11 @@ private:
     float desiredLaunchSpeedRight;
     float desiredLaunchSpeedDown;
 
+    Spin desiredSpin = SPIN_100;
+    u_int16_t desiredSpinValue = 100;  // percent of spin
+
+    uint32_t prevTime = 0;
+
     tap::algorithms::Ramp desiredRpmRampLeft;
     tap::algorithms::Ramp desiredRpmRampRight;
     tap::algorithms::Ramp desiredRpmRampDown;
@@ -66,9 +93,9 @@ private:
     tap::motor::DjiMotor rightWheel;
     tap::motor::DjiMotor downWheel;
 
-    uint32_t prevTime = 0;
-
     float launchSpeedToFlywheelRpm(float launchSpeed) const;
+
+    std::array<std::array<modm::Pair<float, float>, 5>, SPIN_COUNT> spinToRPMMap;
 };
 
 }  // namespace src::control::flywheel

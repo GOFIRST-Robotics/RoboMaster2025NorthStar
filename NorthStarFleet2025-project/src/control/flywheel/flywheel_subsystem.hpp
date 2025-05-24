@@ -1,3 +1,5 @@
+#ifndef TARGET_HERO
+
 #ifndef FLYWHEEL_SUBSYSTEM_HPP_
 #define FLYWHEEL_SUBSYSTEM_HPP_
 
@@ -7,6 +9,7 @@
 #include "tap/control/subsystem.hpp"
 #include "tap/motor/rev_motor.hpp"
 
+#include "control/flywheel/flywheel_constants.hpp"
 #include "modm/math/filter/pid.hpp"
 
 namespace src::control::flywheel
@@ -23,8 +26,6 @@ public:
 
     void initialize() override;
 
-    // can now make getter and setter for spin then seprate speed stuff can be removed and spin
-    // accounted for in refresh
     mockable void setDesiredSpin(u_int16_t spin);
 
     mockable float getDesiredSpin() const { return desiredSpin; }
@@ -91,7 +92,8 @@ private:
     float desiredLaunchSpeedRight;
     float desiredLaunchSpeedUp;
 
-    u_int16_t desiredSpin = 100;  // percent of spin
+    Spin desiredSpin = SPIN_100;
+    u_int16_t desiredSpinValue = 100;  // percent of spin
 
     uint32_t prevTime = 0;
 
@@ -105,9 +107,11 @@ private:
 
     float launchSpeedToFlywheelRpm(float launchSpeed) const;
 
-    std::unordered_map<u_int16_t, std::vector<modm::Pair<float, float>>> spinToRPMMap;
+    std::array<std::array<modm::Pair<float, float>, 5>, SPIN_COUNT> spinToRPMMap;
 };
 
 }  // namespace src::control::flywheel
+
+#endif
 
 #endif
