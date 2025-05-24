@@ -66,7 +66,7 @@ public:
      */
     mockable void setMotorOutput(float out);
 
-    /**
+    /**z
      * Attaches the specified turretController to this turret motor. This does not give ownership
      * of the controller to this object. Instead it allows commands to know which turret controller
      * is currently being run (since turret controllers are shared by commands but persist across
@@ -85,8 +85,6 @@ public:
      * constructor.
      */
     mockable void setChassisFrameSetpoint(WrappedFloat setpoint);
-
-    mockable void setClampedMotorFrameSetpoint(WrappedFloat setpoint);
 
     /// @return `true` if the hardware motor is connected and powered on
     mockable inline bool isOnline() const { return motor->isMotorOnline(); }
@@ -109,7 +107,7 @@ public:
      */
     mockable inline float getChassisFrameVelocity() const
     {
-        return (M_TWOPI / 60) * motor->getShaftRPM();
+        return motor->getEncoder()->getVelocity();
     }
 
     /// @return turret controller controlling this motor (as specified by `attachTurretController`)

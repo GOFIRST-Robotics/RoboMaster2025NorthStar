@@ -67,7 +67,6 @@ static constexpr TurretMotorConfig YAW_MOTOR_CONFIG_TOP = {
     .minAngle = 0,
     .maxAngle = modm::toRadian(180),
     .limitMotorAngles = false,
-    .useClampedLimiting = true,
 };
 
 static constexpr TurretMotorConfig PITCH_MOTOR_CONFIG_BOTTOM = {

@@ -34,8 +34,7 @@ TurretMotor::TurretMotor(tap::motor::MotorInterface *motor, const TurretMotorCon
       motor(motor),
       ratio(config.ratio),
       chassisFrameSetpoint(Angle(config.startAngle)),
-      chassisFrameMeasuredAngle(Angle(config.startAngle)),
-      lastUpdatedEncoderValue(config.startEncoderValue)
+      chassisFrameMeasuredAngle(Angle(config.startAngle))
 {
     assert(config.minAngle <= config.maxAngle);
     assert(motor != nullptr);
@@ -45,31 +44,13 @@ void TurretMotor::updateMotorAngle()
 {
     if (isOnline())
     {
-        int64_t encoderUnwrapped = motor->getEncoderUnwrapped();
-
-        if (lastUpdatedEncoderValue == encoderUnwrapped)
-        {
-            return;
-        }
-
-        lastUpdatedEncoderValue = encoderUnwrapped;
-
         float chassisFrameUnwrappedMeasurement =
-            static_cast<float>(encoderUnwrapped - config.startEncoderValue) *
-                static_cast<float>(M_TWOPI) / static_cast<float>(DjiMotor::ENC_RESOLUTION) +
-            config.startAngle;
+            motor->getEncoder()->getPosition().getUnwrappedValue();
 
         chassisFrameMeasuredAngle.setUnwrappedValue(chassisFrameUnwrappedMeasurement * ratio);
     }
     else
     {
-        if (lastUpdatedEncoderValue == config.startEncoderValue)
-        {
-            return;
-        }
-
-        lastUpdatedEncoderValue = config.startEncoderValue;
-
         chassisFrameMeasuredAngle.setUnwrappedValue(config.startAngle);
     }
 }
@@ -95,23 +76,11 @@ void TurretMotor::setChassisFrameSetpoint(WrappedFloat setpoint)
     if (config.limitMotorAngles)
     {
         int status;
-        // chassisFrameSetpoint = Angle(
-        //     limitVal(chassisFrameSetpoint.getUnwrappedValue(), config.minAngle,
-        //     config.maxAngle));
         chassisFrameSetpoint = Angle(WrappedFloat::limitValue(
             chassisFrameSetpoint,
             config.minAngle,
             config.maxAngle,
             &status));
-    }
-}
-
-void TurretMotor::setClampedMotorFrameSetpoint(WrappedFloat setpoint)
-{
-    if (config.useClampedLimiting)
-    {
-        chassisFrameSetpoint = Angle(
-            limitVal(chassisFrameSetpoint.getUnwrappedValue(), config.minAngle, config.maxAngle));
     }
 }
 
