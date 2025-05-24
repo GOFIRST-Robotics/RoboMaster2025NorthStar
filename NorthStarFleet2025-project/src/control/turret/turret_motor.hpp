@@ -86,6 +86,8 @@ public:
      */
     mockable void setChassisFrameSetpoint(WrappedFloat setpoint);
 
+    mockable void setClampedMotorFrameSetpoint(WrappedFloat setpoint);
+
     /// @return `true` if the hardware motor is connected and powered on
     mockable inline bool isOnline() const { return motor->isMotorOnline(); }
 
