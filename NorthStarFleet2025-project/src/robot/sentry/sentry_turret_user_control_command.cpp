@@ -99,25 +99,27 @@ void SentryTurretUserControlCommand::execute()
     float bottomMeasurement = yawControllerBottom->getMeasurement().getUnwrappedValue() -
                               turretSubsystem->bottomMeasurementOffset;
 
+    float delta =
+        -(yawControllerTop->getMeasurement().getUnwrappedValue() -
+          turretSubsystem->topMeasurementOffset);
+
+    if (delta <= -DELTA_MAX)
+    {
+        comp = bottomMeasurement + DELTA_MAX;
+    }
+    else if (delta >= DELTA_MAX)
+    {
+        comp = bottomMeasurement - DELTA_MAX;
+    }
+
+    yawSetpointTop = limitVal(-(bottomMeasurement) + comp, -DELTA_MAX, DELTA_MAX);
+
     if (controlOperatorInterface.isRightSwitchUp())
     {
         pitchSetpointTop = pitchControllerTop->getSetpoint() +
                            userPitchInputScalar * controlOperatorInterface.getTurretPitchInput(0);
 
-        float delta =
-            -(yawControllerTop->getMeasurement().getUnwrappedValue() -
-              turretSubsystem->topMeasurementOffset);
-
         float input = userPitchInputScalar * controlOperatorInterface.getTurretYawInput(0);
-
-        if (delta <= -DELTA_MAX)
-        {
-            comp = bottomMeasurement + DELTA_MAX;
-        }
-        else if (delta >= DELTA_MAX)
-        {
-            comp = bottomMeasurement - DELTA_MAX;
-        }
 
         if (yawSetpointTop + input < DELTA_MAX && yawSetpointTop + input > -DELTA_MAX)
         {
@@ -127,8 +129,6 @@ void SentryTurretUserControlCommand::execute()
         {
             comp = getSign(input) * DELTA_MAX + bottomMeasurement;
         }
-
-        yawSetpointTop = limitVal(-(bottomMeasurement) + comp, -DELTA_MAX, DELTA_MAX);
 
         if (abs(yawSetpointTop) == DELTA_MAX && input != 0 && yawSetpointTop + input < DELTA_MAX &&
             yawSetpointTop + input > -DELTA_MAX)

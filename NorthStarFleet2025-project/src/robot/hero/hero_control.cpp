@@ -166,11 +166,10 @@ ToggleCommandMapping gPressedChangeFireRate(
     {&setFireRateCommand5SPR},
     RemoteMapState(RemoteMapState({tap::communication::serial::Remote::Key::G})));
 
-HoldRepeatCommandMapping leftMousePressedShoot(
+ToggleCommandMapping leftMousePressedShoot(
     drivers(),
     {&rotateAndUnjamAgitatorWhenFrictionWheelsOnUntilProjectileLaunched},  // TODO
-    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::DOWN),
-    false);
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::DOWN));
 
 // turret subsystem
 tap::motor::DjiMotor pitchMotor(

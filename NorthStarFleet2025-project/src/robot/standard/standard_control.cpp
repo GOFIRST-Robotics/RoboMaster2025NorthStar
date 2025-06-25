@@ -127,7 +127,7 @@ FlywheelSubsystem flywheel(drivers(), LEFT_MOTOR_ID, RIGHT_MOTOR_ID, UP_MOTOR_ID
 FlywheelRunCommand flywheelRunCommand(&flywheel);
 
 // flywheel mappings
-HoldCommandMapping leftSwitchUpFlywheels(
+ToggleCommandMapping leftSwitchUpFlywheels(
     drivers(),
     {&flywheelRunCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));

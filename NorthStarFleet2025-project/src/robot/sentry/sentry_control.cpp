@@ -107,10 +107,10 @@ FlywheelSubsystem flywheelBottom(
 
 FlywheelRunCommand flywheelRunCommandBottom(&flywheelBottom);
 
-ToggleCommandMapping fNotCtrlPressed(
+ToggleCommandMapping leftSwitchUp2(
     drivers(),
     {&flywheelRunCommandBottom},
-    RemoteMapState({Remote::Key::F}, {Remote::Key::CTRL}));
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 FlywheelSubsystem flywheelTop(
     drivers(),
@@ -121,10 +121,10 @@ FlywheelSubsystem flywheelTop(
 
 FlywheelRunCommand flywheelRunCommandTop(&flywheelTop);
 
-ToggleCommandMapping fCtrlPressed(
+ToggleCommandMapping leftSwitchUp1(
     drivers(),
     {&flywheelRunCommandTop},
-    RemoteMapState({Remote::Key::F, Remote::Key::CTRL}));
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // turret subsystem
 tap::motor::DjiMotor pitchMotorBottom(
@@ -427,10 +427,10 @@ GovernorLimitedCommand<2> rotateAndUnjamAgitatorWithHeatAndCVLimitingBottom(
     rotateAndUnjamAgitatorWhenFrictionWheelsOnUntilProjectileLaunchedBottom,
     {&heatLimitGovernorBottom, &cvOnTargetGovernorBottom});
 
-MultiShotCvCommandMapping leftMouseNotCtrlPressed(
+MultiShotCvCommandMapping leftSwitchDown2(
     *drivers(),
-    rotateAndUnjamAgitatorWithHeatAndCVLimitingBottom,
-    RemoteMapState(RemoteMapState::MouseButton::LEFT, {}, {Remote::Key::CTRL}),
+    rotateAndUnjamAgitatorWhenFrictionWheelsOnUntilProjectileLaunchedBottom,  // rotateAndUnjamAgitatorWithHeatAndCVLimitingBottom,
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::DOWN),
     &manualFireRateReselectionManagerBottom,
     cvOnTargetGovernorBottom,
     &rotateAgitatorBottom);
@@ -443,7 +443,7 @@ CycleStateCommandMapping<
         drivers(),
         RemoteMapState({Remote::Key::G}, {Remote::Key::CTRL}),
         MultiShotCvCommandMapping::SINGLE,
-        &leftMouseNotCtrlPressed,
+        &leftSwitchDown2,
         &MultiShotCvCommandMapping::setShooterState,
         RemoteMapState({Remote::Key::V}, {Remote::Key::CTRL}));
 
@@ -524,10 +524,10 @@ GovernorLimitedCommand<2> rotateAndUnjamAgitatorWithHeatAndCVLimitingTop(
     rotateAndUnjamAgitatorWhenFrictionWheelsOnUntilProjectileLaunchedTop,
     {&heatLimitGovernorTop, &cvOnTargetGovernorTop});
 
-MultiShotCvCommandMapping leftMouseCtrlPressed(
+MultiShotCvCommandMapping leftSwitchDown1(
     *drivers(),
-    rotateAndUnjamAgitatorWithHeatAndCVLimitingTop,
-    RemoteMapState(RemoteMapState::MouseButton::LEFT, {Remote::Key::CTRL}),
+    rotateAndUnjamAgitatorWhenFrictionWheelsOnUntilProjectileLaunchedTop,  // rotateAndUnjamAgitatorWithHeatAndCVLimitingTop,
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::DOWN),
     &manualFireRateReselectionManagerTop,
     cvOnTargetGovernorTop,
     &rotateAgitatorTop);
@@ -540,7 +540,7 @@ CycleStateCommandMapping<
         drivers(),
         RemoteMapState({Remote::Key::G, Remote::Key::CTRL}),
         MultiShotCvCommandMapping::SINGLE,
-        &leftMouseCtrlPressed,
+        &leftSwitchDown1,
         &MultiShotCvCommandMapping::setShooterState,
         RemoteMapState({Remote::Key::V, Remote::Key::CTRL}));
 
@@ -690,12 +690,12 @@ void startSentryCommands(Drivers *drivers)
 
 void registerSentryIoMappings(Drivers *drivers)
 {
-    drivers->commandMapper.addMap(&leftMouseCtrlPressed);
-    drivers->commandMapper.addMap(&leftMouseNotCtrlPressed);
+    drivers->commandMapper.addMap(&leftSwitchDown1);
+    drivers->commandMapper.addMap(&leftSwitchDown2);
     drivers->commandMapper.addMap(&rCtrlPressed);
     drivers->commandMapper.addMap(&rNotCtrlPressed);
-    drivers->commandMapper.addMap(&fCtrlPressed);
-    drivers->commandMapper.addMap(&fNotCtrlPressed);
+    drivers->commandMapper.addMap(&leftSwitchUp1);
+    drivers->commandMapper.addMap(&leftSwitchUp2);
     drivers->commandMapper.addMap(&gOrVCtrlPressed);
     drivers->commandMapper.addMap(&gOrVNotCtrlPressed);
     drivers->commandMapper.addMap(&beyBlade);
