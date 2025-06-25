@@ -127,10 +127,10 @@ FlywheelSubsystem flywheel(drivers(), LEFT_MOTOR_ID, RIGHT_MOTOR_ID, UP_MOTOR_ID
 FlywheelRunCommand flywheelRunCommand(&flywheel);
 
 // flywheel mappings
-ToggleCommandMapping fPressedFlywheels(
+HoldCommandMapping leftSwitchUpFlywheels(
     drivers(),
     {&flywheelRunCommand},
-    RemoteMapState(RemoteMapState({tap::communication::serial::Remote::Key::F})));
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
 
 // turret subsystem
 tap::motor::DjiMotor pitchMotor(
@@ -309,10 +309,10 @@ GovernorLimitedCommand<2> rotateAndUnjamAgitatorWithHeatAndCVLimiting(
     rotateAndUnjamAgitatorWhenFrictionWheelsOnUntilProjectileLaunched,
     {&heatLimitGovernor, &cvOnTargetGovernor});
 
-MultiShotCvCommandMapping leftMousePressedShoot(
+MultiShotCvCommandMapping leftSwitchDownPressedShoot(
     *drivers(),
     rotateAndUnjamAgitatorWithHeatAndCVLimiting,
-    RemoteMapState(RemoteMapState::MouseButton::LEFT),
+    RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::DOWN),
     &manualFireRateReselectionManager,
     cvOnTargetGovernor,
     &rotateAgitator);
@@ -325,7 +325,7 @@ CycleStateCommandMapping<
         drivers(),
         RemoteMapState({Remote::Key::G}),
         MultiShotCvCommandMapping::SINGLE,
-        &leftMousePressedShoot,
+        &leftSwitchDownPressedShoot,
         &MultiShotCvCommandMapping::setShooterState,
         RemoteMapState({Remote::Key::V}));
 
@@ -499,7 +499,7 @@ FlywheelIndicator flyWheelIndicator(refSerialTransmitter, drivers()->refSerial, 
 ShootingModeIndicator shootingModeIndicator(
     refSerialTransmitter,
     drivers()->refSerial,
-    leftMousePressedShoot);
+    leftSwitchDownPressedShoot);
 
 CvAimingIndicator cvAimingIndicator(refSerialTransmitter, drivers()->refSerial, cvOnTargetGovernor);
 
@@ -563,9 +563,9 @@ void startStandardCommands(Drivers *drivers)
 
 void registerStandardIoMappings(Drivers *drivers)
 {
-    drivers->commandMapper.addMap(&leftMousePressedShoot);
+    drivers->commandMapper.addMap(&leftSwitchDownPressedShoot);
     // drivers->commandMapper.addMap(&vPressed);
-    drivers->commandMapper.addMap(&fPressedFlywheels);
+    drivers->commandMapper.addMap(&leftSwitchUpFlywheels);
     drivers->commandMapper.addMap(&bPressedNotCntlPressedBeyblade);
     // drivers->commandMapper.addMap(&gPressed);
     drivers->commandMapper.addMap(&xPressedIMUCalibrate);
