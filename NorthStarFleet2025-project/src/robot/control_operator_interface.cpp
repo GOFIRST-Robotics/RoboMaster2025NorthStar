@@ -345,6 +345,11 @@ bool ControlOperatorInterface::isRightSwitchUp()
     return (remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::UP);
 }
 
+bool ControlOperatorInterface::isRightSwitchDown()
+{
+    return (remote.getSwitch(Remote::Switch::RIGHT_SWITCH) == Remote::SwitchState::DOWN);
+}
+
 bool ControlOperatorInterface::isGKeyPressed() { return (remote.keyPressed(Remote::Key::G)); }
 
 void ControlOperatorInterface::checkToggleBeyBlade()
