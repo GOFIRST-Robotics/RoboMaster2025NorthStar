@@ -674,12 +674,12 @@ void registerSentrySubsystems(Drivers *drivers)
 
 void setDefaultSentryCommands(Drivers *drivers)
 {
-    chassisSubsystem.setDefaultCommand(&chassisDefault);
-    sentryTurrets.setDefaultCommand(&cvManagerGameDefault);  // turretUserControlCommand );
-    flywheelBottom.setDefaultCommand(&flywheelBottomDefault);
-    flywheelTop.setDefaultCommand(&flywheelTopDefault);
-    agitatorBottom.setDefaultCommand(&agitatorBottomDefault);
-    agitatorTop.setDefaultCommand(&agitatorTopDefault);
+    chassisSubsystem.setDefaultCommand(&chassisDriveCommand);
+    sentryTurrets.setDefaultCommand(&turretUserControlCommand);  // turretUserControlCommand );
+    // flywheelBottom.setDefaultCommand(&flywheelBottomDefault);
+    // flywheelTop.setDefaultCommand(&flywheelTopDefault);
+    // agitatorBottom.setDefaultCommand(&agitatorBottomDefault);
+    // agitatorTop.setDefaultCommand(&agitatorTopDefault);
 }
 
 void startSentryCommands(Drivers *drivers)
