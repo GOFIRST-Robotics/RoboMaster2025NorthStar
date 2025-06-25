@@ -111,7 +111,7 @@ HeroFlywheelSubsystem flywheel(drivers(), LEFT_MOTOR_ID, RIGHT_MOTOR_ID, DOWN_MO
 
 HeroFlywheelRunCommand heroFlywheelRunCommand(&flywheel);
 
-HoldCommandMapping leftSwitchUpPressedFlywheel(
+ToggleCommandMapping leftSwitchUpPressedFlywheel(
     drivers(),
     {&heroFlywheelRunCommand},
     RemoteMapState(Remote::Switch::LEFT_SWITCH, Remote::SwitchState::UP));
