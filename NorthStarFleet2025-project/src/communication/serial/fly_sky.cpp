@@ -1,4 +1,4 @@
-#define FLY_SKY
+//#define FLY_SKY
 #ifdef FLY_SKY
 /*
  * FlySky iBUS receiver driver for Taproot.

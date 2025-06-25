@@ -1,4 +1,4 @@
-#define FLY_SKY
+//#define FLY_SKY
 #ifdef FLY_SKY
 
 #ifndef FLYSKY_REMOTE_HPP_

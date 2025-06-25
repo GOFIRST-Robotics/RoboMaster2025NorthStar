@@ -139,7 +139,7 @@ public:
     gpio::Leds leds;
     gpio::Pwm pwm;
     communication::serial::RefSerial refSerial;
-#define FLY_SKY
+//#define FLY_SKY
 #ifdef FLY_SKY
     communication::serial::FlySky remote;
 #else

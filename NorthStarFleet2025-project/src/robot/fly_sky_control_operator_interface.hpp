@@ -1,7 +1,7 @@
-#define FLY_SKY
+//#define FLY_SKY
 #ifdef FLY_SKY
 #ifndef FLY_SKY_CONTROL_OPERATOR_INTERFACE_HPP_
-#define FLY_SKY_CONTROL_OPERATOR_INTERFACE_HPP_
+//#define FLY_SKY_CONTROL_OPERATOR_INTERFACE_HPP_
 
 // mm tasty imports
 #include <tap/algorithms/linear_interpolation_predictor.hpp>

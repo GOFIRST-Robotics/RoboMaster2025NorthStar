@@ -1,4 +1,4 @@
-#define FLY_SKY
+//#define FLY_SKY
 #ifdef FLY_SKY
 #include "robot/fly_sky_control_operator_interface.hpp"
 #else
